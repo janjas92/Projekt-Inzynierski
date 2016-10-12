@@ -1,55 +1,46 @@
 package jendrzyca.piotr.qrreader;
 
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
 
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
+import com.google.zxing.ResultPoint;
+import com.journeyapps.barcodescanner.BarcodeCallback;
+import com.journeyapps.barcodescanner.BarcodeResult;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
+import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+import jendrzyca.piotr.qrreader.Fragments.ScannerFragment;
+import jendrzyca.piotr.qrreader.Fragments.ScannerInfoFragment;
 
-    //@BindView(R.id.button)
-    Button scannerButton;
+public class MainActivity extends AppCompatActivity implements BarcodeCallback{
 
+    ScannerInfoFragment infoFragment;
+    ScannerFragment scannerFragment;
 
-//    @OnClick(R.id.button)
-//    void startScanner(View view) {
-//        Toast.makeText(this, "click", Toast.LENGTH_LONG);
-//
-//        new IntentIntegrator(this).initiateScan();
-//    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
 
+        //getting fragment manager
+        FragmentManager manager = getSupportFragmentManager();
 
-
+        //binding fragments
+        scannerFragment = (ScannerFragment) manager.findFragmentById(R.id.fragmentScanner);
+        infoFragment = (ScannerInfoFragment) manager.findFragmentById(R.id.fragmentInfo);
 
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode,resultCode,data);
+    public void barcodeResult(BarcodeResult result) {
         if (result != null) {
-            if (result.getContents() == null) {
-                Log.d("error","");
-            } else {
-                Log.d("scanned: ",result.getContents());
-                Toast.makeText(this, result.getContents(), Toast.LENGTH_LONG).show();
-            }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
+            infoFragment.setInfo(result.getText());
         }
+    }
+
+    @Override
+    public void possibleResultPoints(List<ResultPoint> resultPoints) {
+
     }
 }
