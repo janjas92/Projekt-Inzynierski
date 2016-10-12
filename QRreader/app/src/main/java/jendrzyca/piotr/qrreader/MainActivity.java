@@ -1,46 +1,56 @@
 package jendrzyca.piotr.qrreader;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 
 import com.google.zxing.ResultPoint;
 import com.journeyapps.barcodescanner.BarcodeCallback;
 import com.journeyapps.barcodescanner.BarcodeResult;
+import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 
 import java.util.List;
 
-import jendrzyca.piotr.qrreader.Fragments.ScannerFragment;
-import jendrzyca.piotr.qrreader.Fragments.ScannerInfoFragment;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements BarcodeCallback{
+public class MainActivity extends AppCompatActivity {
 
-    ScannerInfoFragment infoFragment;
-    ScannerFragment scannerFragment;
+    @BindView(R.id.scanner)DecoratedBarcodeView scanner;
+
+    BarcodeCallback callback = new BarcodeCallback() {
+        @Override
+        public void barcodeResult(BarcodeResult result) {
+
+        }
+
+        @Override
+        public void possibleResultPoints(List<ResultPoint> resultPoints) {
+
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
 
-        //getting fragment manager
-        FragmentManager manager = getSupportFragmentManager();
+        //clearing scanners display name
+        scanner.setStatusText("");
+        //setting scanner to run continuously
+        scanner.decodeContinuous(callback);
+    }
 
-        //binding fragments
-        scannerFragment = (ScannerFragment) manager.findFragmentById(R.id.fragmentScanner);
-        infoFragment = (ScannerInfoFragment) manager.findFragmentById(R.id.fragmentInfo);
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        scanner.resume();
     }
 
     @Override
-    public void barcodeResult(BarcodeResult result) {
-        if (result != null) {
-            infoFragment.setInfo(result.getText());
-        }
-    }
-
-    @Override
-    public void possibleResultPoints(List<ResultPoint> resultPoints) {
-
+    protected void onPause() {
+        super.onPause();
+        scanner.pause();
     }
 }

@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
+apply plugin: 'realm-android'
+
 
 
 android {
@@ -32,4 +34,22 @@ dependencies {
 
     compile 'com.jakewharton:butterknife:8.4.0'
     apt 'com.jakewharton:butterknife-compiler:8.4.0'
+
+    //dagger
+    apt 'com.google.dagger:dagger-compiler:2.5'
+    compile 'com.google.dagger:dagger:2.5'
+    provided 'javax.annotation:jsr250-api:1.0'
+
+    //retrofit2
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+
+    //rxJava
+    compile 'io.reactivex:rxjava:1.1.8'
+    compile 'io.reactivex:rxandroid:1.2.1'
+
+    //rxJava adapter for retrofit
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
+
+    //gson converter for retrofit
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
 }

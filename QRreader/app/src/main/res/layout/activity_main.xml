@@ -7,33 +7,10 @@
     android:orientation="vertical"
     tools:context="jendrzyca.piotr.qrreader.MainActivity">
 
-    <FrameLayout
+    <com.journeyapps.barcodescanner.DecoratedBarcodeView
+        android:id="@+id/scanner"
         android:layout_width="match_parent"
-        android:layout_height="220dp">
-
-        <fragment
-            android:id="@+id/fragmentInfo"
-            android:name="jendrzyca.piotr.qrreader.Fragments.ScannerInfoFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentTop="true"
-            android:layout_toEndOf="@+id/frameLayout"
-            android:layout_toRightOf="@+id/frameLayout"
-            />
-    </FrameLayout>
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <fragment
-            android:id="@+id/fragmentScanner"
-            android:name="jendrzyca.piotr.qrreader.Fragments.ScannerFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true" />
-    </FrameLayout>
+        android:layout_height="match_parent"></com.journeyapps.barcodescanner.DecoratedBarcodeView>
 
 
 </LinearLayout>
