@@ -1,6 +1,10 @@
-package jendrzyca.piotr.qrreader;
+package jendrzyca.piotr.qrreader.activities;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 
 import com.google.zxing.ResultPoint;
@@ -12,15 +16,24 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import jendrzyca.piotr.qrreader.R;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements EmployeeInfoDialogFragment.ClosingCallback {
 
-    @BindView(R.id.scanner)DecoratedBarcodeView scanner;
+    @BindView(R.id.scanner)
+    DecoratedBarcodeView scanner;
 
     BarcodeCallback callback = new BarcodeCallback() {
         @Override
         public void barcodeResult(BarcodeResult result) {
 
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            scanner.pause();
+
+            EmployeeInfoDialogFragment dialog = EmployeeInfoDialogFragment.newInstance(result.getText(), MainActivity.this);
+
+            // Hide after some seconds
+            dialog.show(fragmentManager, "test");
         }
 
         @Override
@@ -28,6 +41,11 @@ public class MainActivity extends AppCompatActivity {
 
         }
     };
+
+    @Override
+    public void onClose() {
+        scanner.resume();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,4 +71,6 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         scanner.pause();
     }
+
+
 }
