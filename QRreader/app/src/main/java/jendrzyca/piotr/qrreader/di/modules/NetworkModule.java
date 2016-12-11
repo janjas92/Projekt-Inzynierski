@@ -6,8 +6,11 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import jendrzyca.piotr.qrreader.di.scopes.PerActivity;
+import jendrzyca.piotr.qrreader.di.scopes.PerApplication;
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -15,13 +18,21 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  * Created by Piotr Jendrzyca on 10/13/16.
  */
-@Module
+@Module (includes = ApplicationModule.class)
 public class NetworkModule {
 
-    final String baseUrl = "/api/v1.0/";
+    final String baseUrl = "http://onet.pl/api/v1.0/";
 
     @Provides
-    @Singleton
+    @PerApplication
+    public HttpLoggingInterceptor provideInterceptor() {
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
+        return interceptor;
+    }
+
+    @Provides
+    @PerApplication
     public Cache provideOkHttpCache(Application application) {
         int cacheSize = 10 *  1024;
         Cache cache = new Cache(application.getCacheDir(), cacheSize);
@@ -29,15 +40,16 @@ public class NetworkModule {
     }
 
     @Provides
-    @Singleton
-    public OkHttpClient provideOkHttpClient(Cache cache) {
+    @PerApplication
+    public OkHttpClient provideOkHttpClient(Cache cache, HttpLoggingInterceptor interceptor) {
         return new OkHttpClient.Builder()
                 .cache(cache)
+                .addInterceptor(interceptor)
                 .build();
     }
 
     @Provides
-    @Singleton
+    @PerApplication
     public Retrofit provideRetrofit(OkHttpClient client) {
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)

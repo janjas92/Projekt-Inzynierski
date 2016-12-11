@@ -2,20 +2,19 @@ package jendrzyca.piotr.qrreader.di.modules;
 
 import dagger.Module;
 import dagger.Provides;
-import io.realm.Realm;
 import jendrzyca.piotr.qrreader.di.scopes.PerActivity;
+import jendrzyca.piotr.qrreader.utils.BitmapCache;
 
 /**
- * Created by Piotr Jendrzyca on 10/13/16.
+ * Created by huddy on 11.12.2016.
  */
-
 @Module
-public class DatabaseModule {
+public class BitmapCacheModule {
 
     @Provides
     @PerActivity
-    Realm provideRealm() {
-        return Realm.getDefaultInstance();
+    public BitmapCache provideBitmapCache() {
+        return new BitmapCache();
     }
 
 }
