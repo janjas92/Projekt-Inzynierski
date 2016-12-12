@@ -1,16 +1,15 @@
 package jendrzyca.piotr.qrreader.activities;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
-import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,7 +22,6 @@ import com.journeyapps.barcodescanner.camera.CameraSettings;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -39,9 +37,9 @@ import jendrzyca.piotr.qrreader.utils.BitmapCache;
 import retrofit2.Retrofit;
 import timber.log.Timber;
 
-public class MainActivity extends AppCompatActivity implements EmployeeInfoDialogFragment.ClosingCallback {
+public class ScannerActivity extends AppCompatActivity {
 
-    public final String TAG = MainActivity.class.getSimpleName();
+    public final String TAG = ScannerActivity.class.getSimpleName();
 
     @BindView(R.id.tvDate)
     TextView tvDate;
@@ -87,10 +85,14 @@ public class MainActivity extends AppCompatActivity implements EmployeeInfoDialo
 
             Timber.i("Cache bitmap" + bmCache.getBitmap("avatar"));
 
-            EmployeeInfoDialogFragment dialog = EmployeeInfoDialogFragment.newInstance(result.getText(), MainActivity.this);
+            String hashCode = result.getText();
 
-            // Hide after some seconds
-            dialog.show(fragmentManager, "test");
+            Intent i = new Intent(ScannerActivity.this, EmployeeInfoActivity.class);
+            i.putExtra("hashCode", hashCode);
+
+            startActivityForResult(i,1);
+
+
             Toast.makeText(getApplicationContext(), result.getText(), Toast.LENGTH_LONG).show();
 
         }
@@ -102,8 +104,12 @@ public class MainActivity extends AppCompatActivity implements EmployeeInfoDialo
     };
 
     @Override
-    public void onClose() {
-        scanner.resume();
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1) {
+            if (resultCode == Activity.RESULT_OK) {
+                scanner.resume();
+            }
+        }
     }
 
     @SuppressLint("NewApi")
