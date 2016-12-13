@@ -2,11 +2,10 @@ package jendrzyca.piotr.qrreader.di.modules;
 
 import android.app.Application;
 
-import javax.inject.Singleton;
+import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
-import jendrzyca.piotr.qrreader.di.scopes.PerActivity;
 import jendrzyca.piotr.qrreader.di.scopes.PerApplication;
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
@@ -21,7 +20,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @Module (includes = ApplicationModule.class)
 public class NetworkModule {
 
-    final String baseUrl = "http://onet.pl/api/v1.0/";
+    final String BASE_URL = "https://euw.api.pvp.net/api/lol/";
 
     @Provides
     @PerApplication
@@ -52,7 +51,7 @@ public class NetworkModule {
     @PerApplication
     public Retrofit provideRetrofit(OkHttpClient client) {
         return new Retrofit.Builder()
-                .baseUrl(baseUrl)
+                .baseUrl(BASE_URL)
                 .client(client)
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())

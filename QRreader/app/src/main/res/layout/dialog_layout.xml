@@ -2,23 +2,21 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
+    android:id="@+id/container"
     android:layout_height="match_parent">
-
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/avatar" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
-        android:text="Welcome"
+        android:text="Witaj"
         android:ems="10"
         android:id="@+id/tbMessage"
         android:textAlignment="center"
-        android:textSize="26sp" />
+        android:textSize="26sp"
+        android:textStyle="normal|bold"
+        android:fontFamily="serif"
+        android:textColor="@color/zxing_status_text" />
 
     <TextView
         android:layout_width="match_parent"
@@ -30,7 +28,9 @@
         android:ems="10"
         android:id="@+id/tbFirstName"
         android:textSize="20sp"
-        android:paddingTop="20dp" />
+        android:paddingTop="20dp"
+        android:fontFamily="serif"
+        android:textColor="@color/zxing_status_text" />
 
     <TextView
         android:layout_width="match_parent"
@@ -42,5 +42,36 @@
         android:ems="10"
         android:id="@+id/tbLastName"
         android:textSize="20sp"
-        android:paddingTop="20dp" />
+        android:paddingTop="20dp"
+        android:fontFamily="serif"
+        android:textColor="@color/zxing_status_text" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/in"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/ivStatus" />
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ivStatus"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="39dp"
+        android:id="@+id/tvStatus"
+        android:fontFamily="serif"
+        android:textSize="20sp"
+        android:textColor="@android:color/holo_green_dark" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="17dp"
+        android:id="@+id/tvRemaining"
+        android:textColor="@android:color/holo_red_dark" />
 </RelativeLayout>

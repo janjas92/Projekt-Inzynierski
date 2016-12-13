@@ -5,7 +5,7 @@ import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.Required;
 
 /**
- * Created by huddy on 14.10.2016.
+ * Created by Piotr Jendrzyca on 14.10.2016.
  */
 
 public class EmployeeCode extends RealmObject {

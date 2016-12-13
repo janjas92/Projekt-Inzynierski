@@ -25,7 +25,7 @@ public interface EmployeeService {
     @POST("{time}")
     Observable<Employee> sendTimeStamp(@Path("time")Timestamp ts);
 
-    //test methods rito api
+    //test method rito api
     @GET("euw/v1.4/summoner/by-name/{name}?")
     Observable<JsonObject> getSummonerId(@Path("name") String name, @Query("api_key") String apiKey);
 

@@ -5,7 +5,9 @@ import android.util.Log;
 import timber.log.Timber;
 
 /**
- * Created by huddy on 11.12.2016.
+ * Created by Piotr Jendrzyca on 11.12.2016.
+ *
+ * Utilizing timber to release mode
  */
 
 public class ReleaseTree extends Timber.Tree {

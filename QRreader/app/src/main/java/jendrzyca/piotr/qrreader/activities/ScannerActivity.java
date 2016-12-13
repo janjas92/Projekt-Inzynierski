@@ -10,18 +10,21 @@ import android.os.CountDownTimer;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.zxing.ResultPoint;
-import com.journeyapps.barcodescanner.BarcodeCallback;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.journeyapps.barcodescanner.BarcodeResult;
 import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 import com.journeyapps.barcodescanner.camera.CameraSettings;
+import com.wang.avi.AVLoadingIndicatorView;
 
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -33,8 +36,14 @@ import jendrzyca.piotr.qrreader.R;
 import jendrzyca.piotr.qrreader.di.components.ActivityComponent;
 import jendrzyca.piotr.qrreader.di.components.DaggerActivityComponent;
 import jendrzyca.piotr.qrreader.di.modules.DatabaseModule;
+import jendrzyca.piotr.qrreader.model.Properties;
+import jendrzyca.piotr.qrreader.network.EmployeeService;
 import jendrzyca.piotr.qrreader.utils.BitmapCache;
+import jendrzyca.piotr.qrreader.utils.CodeCallback;
 import retrofit2.Retrofit;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class ScannerActivity extends AppCompatActivity {
@@ -47,6 +56,8 @@ public class ScannerActivity extends AppCompatActivity {
     TextView tvTime;
     @BindView(R.id.scanner)
     DecoratedBarcodeView scanner;
+    @BindView(R.id.progress)
+    AVLoadingIndicatorView progress;
 
     @Inject
     Retrofit retrofit;
@@ -59,7 +70,7 @@ public class ScannerActivity extends AppCompatActivity {
 
     private ActivityComponent component;
 
-    private CountDownTimer changeTime = new CountDownTimer(100000000, 1000) {
+    private CountDownTimer updateDateAndTime = new CountDownTimer(100000000, 1000) {
         @Override
         public void onTick(long l) {
             setDateAndTime();
@@ -71,38 +82,54 @@ public class ScannerActivity extends AppCompatActivity {
         }
     };
 
-    private BarcodeCallback callback = new BarcodeCallback() {
-
-        @Override
-        public void barcodeResult(BarcodeResult result) {
-            scanner.pause();
-
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            Bitmap preview = result.getBitmap();
-
-            //adding preview to bitmap cache
-            bmCache.addBitmap("avatar", preview);
-
-            Timber.i("Cache bitmap" + bmCache.getBitmap("avatar"));
-
-            String hashCode = result.getText();
-
-            Intent i = new Intent(ScannerActivity.this, EmployeeInfoActivity.class);
-            i.putExtra("hashCode", hashCode);
-
-            startActivityForResult(i,1);
+    private CodeCallback callback = new CodeCallback(result -> processBarcodeResult(result));
 
 
-            Toast.makeText(getApplicationContext(), result.getText(), Toast.LENGTH_LONG).show();
+    private void processBarcodeResult(BarcodeResult result) {
+        scanner.pause();
 
-        }
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Bitmap preview = result.getBitmap();
 
-        @Override
-        public void possibleResultPoints(List<ResultPoint> resultPoints) {
+        //adding preview to bitmap cache
+        bmCache.addBitmap("avatar", preview);
 
-        }
-    };
+        String hashCode = result.getText();
+        progress.setVisibility(View.VISIBLE);
+        progress.show();
+        //retrofit
+        Subscription summonerName = retrofit.create(EmployeeService.class)
+                .getSummonerId("qtiepiotr", EmployeeService.API_KEY)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(jsonObject -> changeType(jsonObject))
+                .subscribe(value -> next(value));
 
+        Intent i = new Intent(ScannerActivity.this, EmployeeInfoActivity.class);
+        i.putExtra("hashCode", hashCode);
+
+        startActivityForResult(i, 1);
+    }
+
+    private void next(Map<String, Properties> stringPropertiesMap) {
+        Timber.i(stringPropertiesMap.get("qtiepiotr")+"");
+        Properties p = stringPropertiesMap.get("qtiepiotr");
+        Timber.i(p.getName());
+        Timber.i(p.getId()+"");
+        Timber.i(p.getProfileIconId() + "");
+
+        progress.hide();
+        progress.setVisibility(View.INVISIBLE);
+
+
+    }
+
+    private Map<String, Properties> changeType(JsonObject jo) {
+        Type mapType = new TypeToken<Map<String,Properties>>(){}.getType();
+        Gson gson = new Gson();
+        Map<String, Properties> result = gson.fromJson(jo, mapType);
+        return result;
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1) {
@@ -117,6 +144,8 @@ public class ScannerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //keeping screen on
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         ButterKnife.bind(this);
 
         //creating component and injecting dependencies
@@ -131,6 +160,8 @@ public class ScannerActivity extends AppCompatActivity {
 
 
         Timber.i("Retrofit: " + this.retrofit);
+        Timber.i("bmCache: " + this.bmCache);
+
 
         //setting the scanner to use front camera
         CameraSettings settings = scanner.getBarcodeView().getCameraSettings();
@@ -170,14 +201,14 @@ public class ScannerActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         scanner.resume();
-        changeTime.start();
+        updateDateAndTime.start();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         scanner.pause();
-        changeTime.cancel();
+        updateDateAndTime.cancel();
     }
 
 

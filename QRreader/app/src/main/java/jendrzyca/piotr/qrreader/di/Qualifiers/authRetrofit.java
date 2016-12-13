@@ -1,8 +1,14 @@
-package jendrzyca.piotr.qrreader.di.Qualifiers;
+package jendrzyca.piotr.qrreader.di.qualifiers;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+import javax.inject.Qualifier;
 
 /**
- * Created by huddy on 12.12.2016.
+ * Created by Piotr Jendrzyca on 12.12.2016.
  */
-
-public interface authRetrofit {
+@Qualifier
+@Retention(RetentionPolicy.RUNTIME)
+public @interface AuthRetrofit {
 }

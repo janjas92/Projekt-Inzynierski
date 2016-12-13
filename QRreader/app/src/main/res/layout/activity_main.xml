@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:zxing_barcode_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="jendrzyca.piotr.qrreader.activities.MainActivity">
+    tools:context="jendrzyca.piotr.qrreader.activities.ScannerActivity">
 
     <com.journeyapps.barcodescanner.DecoratedBarcodeView
         android:id="@+id/scanner"
@@ -45,6 +46,17 @@
         android:textAlignment="center"
         android:textColor="#fff"
         android:textSize="30sp" />
+
+    <com.wang.avi.AVLoadingIndicatorView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progress"
+        android:visibility="gone"
+        app:indicatorName="BallGridPulseIndicator"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        />
+
 
 
     <!--<com.journeyapps.barcodescanner.BarcodeView-->
