@@ -5,4 +5,6 @@ package jendrzyca.piotr.qrreader.model;
  */
 
 public class Employee {
+    String firstName;
+    String lastName;
 }

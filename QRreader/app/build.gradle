@@ -1,19 +1,44 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'me.tatarka:gradle-retrolambda:3.2.5'
+    }
+}
+
 apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
+
+//realm.io database
 apply plugin: 'realm-android'
+
+//retrolambda
+apply plugin: 'me.tatarka.retrolambda'
+
 
 
 
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.3"
+
+    //for lambda expressions
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     defaultConfig {
         applicationId "jendrzyca.piotr.qrreader"
-        minSdkVersion 16
+        minSdkVersion 17
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        renderscriptTargetApi 24
+        renderscriptSupportModeEnabled true
     }
     buildTypes {
         release {
@@ -23,15 +48,24 @@ android {
     }
 }
 
+//login materials repository
+repositories {
+    maven {
+        url "https://jitpack.io"
+    }
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+
     compile 'com.journeyapps:zxing-android-embedded:3.3.0'
     compile 'com.android.support:appcompat-v7:23.4.0'
     testCompile 'junit:junit:4.12'
 
+    //butterknife
     compile 'com.jakewharton:butterknife:8.4.0'
     apt 'com.jakewharton:butterknife-compiler:8.4.0'
 
@@ -42,6 +76,8 @@ dependencies {
 
     //retrofit2
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.3.1'
+
 
     //rxJava
     compile 'io.reactivex:rxjava:1.1.8'
@@ -52,4 +88,24 @@ dependencies {
 
     //gson converter for retrofit
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+
+    //picasso
+    compile "com.squareup.picasso:picasso:2.4.0"
+
+    //timber
+    compile 'com.jakewharton.timber:timber:4.4.0'
+    
+    //bluring images
+    compile 'com.wonderkiln:blurkit:1.0.0'
+
+    //progress indicator
+    compile 'com.wang.avi:library:2.1.3'
+
+    //login materials
+    compile ('com.github.ozodrukh:CircularReveal:1.3.1@aar') {
+        transitive = true;
+    }
+    compile 'com.github.shem8:material-login:2.1.1'
+
+
 }
