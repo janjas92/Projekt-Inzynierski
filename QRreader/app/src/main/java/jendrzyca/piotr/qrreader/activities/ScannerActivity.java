@@ -3,10 +3,13 @@ package jendrzyca.piotr.qrreader.activities;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.hardware.Camera;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -25,6 +28,7 @@ import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Map;
+import java.util.jar.Manifest;
 
 import javax.inject.Inject;
 
@@ -144,6 +148,8 @@ public class ScannerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //requesting camera permissions for api 23 +
+        getCameraPermission();
         //keeping screen on
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         ButterKnife.bind(this);
@@ -209,6 +215,15 @@ public class ScannerActivity extends AppCompatActivity {
         super.onPause();
         scanner.pause();
         updateDateAndTime.cancel();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void getCameraPermission() {
+        int hasCameraPersmissios = checkSelfPermission(android.Manifest.permission.CAMERA);
+        if (hasCameraPersmissios != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{android.Manifest.permission.CAMERA}, 123);
+        }
+
     }
 
 

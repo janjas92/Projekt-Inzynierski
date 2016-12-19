@@ -54,10 +54,13 @@ public class LoginActivity extends AppCompatActivity {
             Timber.i("username "+ username);
 
             //logowanko tutaj
-            Intent intent = new Intent(
-                    Intent.ACTION_VIEW,
-                    Uri.parse(AuthenticationModule.BASE_URL + "/authorize" + "?client_id=" + clientId + "&redirect_uri=" + redirectUri));
-            startActivity(intent);
+//            Intent intent = new Intent(
+//                    Intent.ACTION_VIEW,
+//                    Uri.parse(AuthenticationModule.BASE_URL + "/authorize" + "?client_id=" + clientId + "&redirect_uri=" + redirectUri));
+//            startActivity(intent);
+
+            Intent i = new Intent(this, ScannerActivity.class);
+            startActivity(i);
 
         });
 
