@@ -1,4 +1,4 @@
-package jendrzyca.piotr.qrreader.activities;
+package jendrzyca.piotr.qrreader.mvp.activities;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -10,47 +10,33 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.RequiresApi;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 import com.journeyapps.barcodescanner.BarcodeResult;
 import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 import com.journeyapps.barcodescanner.camera.CameraSettings;
 import com.wang.avi.AVLoadingIndicatorView;
 
-import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Map;
-import java.util.jar.Manifest;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.realm.Realm;
 import jendrzyca.piotr.qrreader.QRreader;
 import jendrzyca.piotr.qrreader.R;
 import jendrzyca.piotr.qrreader.di.components.ActivityComponent;
 import jendrzyca.piotr.qrreader.di.components.DaggerActivityComponent;
 import jendrzyca.piotr.qrreader.di.modules.DatabaseModule;
-import jendrzyca.piotr.qrreader.model.Properties;
-import jendrzyca.piotr.qrreader.network.EmployeeService;
-import jendrzyca.piotr.qrreader.utils.BitmapCache;
 import jendrzyca.piotr.qrreader.utils.CodeCallback;
-import retrofit2.Retrofit;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
-public class ScannerActivity extends AppCompatActivity {
+public class ScannerActivity extends AppCompatActivity implements ScannerView {
 
     public final String TAG = ScannerActivity.class.getSimpleName();
 
@@ -64,13 +50,7 @@ public class ScannerActivity extends AppCompatActivity {
     AVLoadingIndicatorView progress;
 
     @Inject
-    Retrofit retrofit;
-
-    @Inject
-    Realm realm;
-
-    @Inject
-    BitmapCache bmCache;
+    ScannerPresenter presenter;
 
     private ActivityComponent component;
 
@@ -90,50 +70,21 @@ public class ScannerActivity extends AppCompatActivity {
 
 
     private void processBarcodeResult(BarcodeResult result) {
+        //pausing the scanner while processing result
         scanner.pause();
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        //getting bitmap image
         Bitmap preview = result.getBitmap();
 
-        //adding preview to bitmap cache
-        bmCache.addBitmap("avatar", preview);
+        //setting bitmap cache
+        presenter.setBitmapCache(preview);
 
         String hashCode = result.getText();
-        progress.setVisibility(View.VISIBLE);
-        progress.show();
-        //retrofit
-        Subscription summonerName = retrofit.create(EmployeeService.class)
-                .getSummonerId("qtiepiotr", EmployeeService.API_KEY)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(jsonObject -> changeType(jsonObject))
-                .subscribe(value -> next(value));
 
-        Intent i = new Intent(ScannerActivity.this, EmployeeInfoActivity.class);
-        i.putExtra("hashCode", hashCode);
-
-        startActivityForResult(i, 1);
+        //getting employee information
+        presenter.getEmployeeInformation(hashCode);
     }
 
-    private void next(Map<String, Properties> stringPropertiesMap) {
-        Timber.i(stringPropertiesMap.get("qtiepiotr")+"");
-        Properties p = stringPropertiesMap.get("qtiepiotr");
-        Timber.i(p.getName());
-        Timber.i(p.getId()+"");
-        Timber.i(p.getProfileIconId() + "");
-
-        progress.hide();
-        progress.setVisibility(View.INVISIBLE);
-
-
-    }
-
-    private Map<String, Properties> changeType(JsonObject jo) {
-        Type mapType = new TypeToken<Map<String,Properties>>(){}.getType();
-        Gson gson = new Gson();
-        Map<String, Properties> result = gson.fromJson(jo, mapType);
-        return result;
-    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1) {
@@ -164,10 +115,7 @@ public class ScannerActivity extends AppCompatActivity {
 
         component.inject(this);
 
-
-        Timber.i("Retrofit: " + this.retrofit);
-        Timber.i("bmCache: " + this.bmCache);
-
+        Timber.i("Presenter: " + this.presenter);
 
         //setting the scanner to use front camera
         CameraSettings settings = scanner.getBarcodeView().getCameraSettings();
@@ -198,11 +146,6 @@ public class ScannerActivity extends AppCompatActivity {
         tvTime.setText(time);
     }
 
-
-    public ActivityComponent getActivityComponent() {
-        return this.component;
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -219,12 +162,35 @@ public class ScannerActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void getCameraPermission() {
-        int hasCameraPersmissios = checkSelfPermission(android.Manifest.permission.CAMERA);
-        if (hasCameraPersmissios != PackageManager.PERMISSION_GRANTED) {
+        int hasCameraPermission = checkSelfPermission(android.Manifest.permission.CAMERA);
+        if (hasCameraPermission != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{android.Manifest.permission.CAMERA}, 123);
         }
-
     }
 
 
+    @Override
+    public void displayEmployeeInfo() {
+        Intent i = new Intent(ScannerActivity.this, EmployeeInfoActivity.class);
+        i.putExtra("hashCode", "imie");
+
+        startActivityForResult(i, 1);
+    }
+
+    @Override
+    public void showLoading() {
+        progress.setVisibility(View.VISIBLE);
+        progress.show();
+    }
+
+    @Override
+    public void hideLoading() {
+        progress.hide();
+        progress.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void displayError(String err) {
+        Toast.makeText(this, err, Toast.LENGTH_LONG).show();
+    }
 }

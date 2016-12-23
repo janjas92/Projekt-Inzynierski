@@ -2,8 +2,6 @@ package jendrzyca.piotr.qrreader.di.modules;
 
 import android.app.Application;
 
-import javax.inject.Named;
-
 import dagger.Module;
 import dagger.Provides;
 import jendrzyca.piotr.qrreader.di.scopes.PerApplication;
@@ -17,7 +15,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  * Created by Piotr Jendrzyca on 10/13/16.
  */
-@Module (includes = ApplicationModule.class)
+@Module(includes = ApplicationModule.class)
 public class NetworkModule {
 
     final String BASE_URL = "https://euw.api.pvp.net/api/lol/";
@@ -26,14 +24,14 @@ public class NetworkModule {
     @PerApplication
     public HttpLoggingInterceptor provideInterceptor() {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         return interceptor;
     }
 
     @Provides
     @PerApplication
     public Cache provideOkHttpCache(Application application) {
-        int cacheSize = 10 *  1024;
+        int cacheSize = 10 * 1024;
         Cache cache = new Cache(application.getCacheDir(), cacheSize);
         return cache;
     }

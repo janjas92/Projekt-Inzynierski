@@ -1,9 +1,11 @@
 package jendrzyca.piotr.qrreader.di.components;
 
+import android.content.Context;
+
 import dagger.Component;
-import jendrzyca.piotr.qrreader.activities.EmployeeInfoActivity;
-import jendrzyca.piotr.qrreader.activities.ScannerActivity;
-import jendrzyca.piotr.qrreader.di.modules.BitmapCacheModule;
+import jendrzyca.piotr.qrreader.mvp.activities.EmployeeInfoActivity;
+import jendrzyca.piotr.qrreader.mvp.activities.LoginActivity;
+import jendrzyca.piotr.qrreader.mvp.activities.ScannerActivity;
 import jendrzyca.piotr.qrreader.di.modules.DatabaseModule;
 import jendrzyca.piotr.qrreader.di.scopes.PerActivity;
 import jendrzyca.piotr.qrreader.utils.BitmapCache;
@@ -19,7 +21,11 @@ public interface ActivityComponent {
 
     void inject(EmployeeInfoActivity employeeInfoActivity);
 
+    void inject(LoginActivity loginActivity);
+
     Retrofit retrofit();
+
+    Context context();
 
     BitmapCache bitmapCache();
 }
