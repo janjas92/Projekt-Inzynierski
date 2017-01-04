@@ -1,8 +1,9 @@
-package jendrzyca.piotr.qrreader.mvp.activities;
+package jendrzyca.piotr.qrreader.activities;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.hardware.Camera;
@@ -33,12 +34,13 @@ import jendrzyca.piotr.qrreader.R;
 import jendrzyca.piotr.qrreader.di.components.ActivityComponent;
 import jendrzyca.piotr.qrreader.di.components.DaggerActivityComponent;
 import jendrzyca.piotr.qrreader.di.modules.DatabaseModule;
+import jendrzyca.piotr.qrreader.mvp.presenter.ScannerPresenter;
+import jendrzyca.piotr.qrreader.mvp.view.ScannerView;
+import jendrzyca.piotr.qrreader.network.ApiError;
 import jendrzyca.piotr.qrreader.utils.CodeCallback;
 import timber.log.Timber;
 
 public class ScannerActivity extends AppCompatActivity implements ScannerView {
-
-    public final String TAG = ScannerActivity.class.getSimpleName();
 
     @BindView(R.id.tvDate)
     TextView tvDate;
@@ -70,9 +72,8 @@ public class ScannerActivity extends AppCompatActivity implements ScannerView {
 
 
     private void processBarcodeResult(BarcodeResult result) {
-        //pausing the scanner while processing result
+        showLoading();
         scanner.pause();
-
         //getting bitmap image
         Bitmap preview = result.getBitmap();
 
@@ -85,20 +86,13 @@ public class ScannerActivity extends AppCompatActivity implements ScannerView {
         presenter.getEmployeeInformation(hashCode);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 1) {
-            if (resultCode == Activity.RESULT_OK) {
-                scanner.resume();
-            }
-        }
-    }
-
     @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //portrait mode only
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         //requesting camera permissions for api 23 +
         getCameraPermission();
         //keeping screen on
@@ -114,6 +108,12 @@ public class ScannerActivity extends AppCompatActivity implements ScannerView {
                 .build();
 
         component.inject(this);
+
+        presenter.attachView(this);
+        //passing api key to presenter
+        String apiKey = getIntent().getExtras().getString("key");
+        Timber.i("apikey: " + apiKey);
+        presenter.setApiKey(apiKey);
 
         Timber.i("Presenter: " + this.presenter);
 
@@ -170,9 +170,12 @@ public class ScannerActivity extends AppCompatActivity implements ScannerView {
 
 
     @Override
-    public void displayEmployeeInfo() {
-        Intent i = new Intent(ScannerActivity.this, EmployeeInfoActivity.class);
-        i.putExtra("hashCode", "imie");
+    public void displayEmployeeInfo(String name, Integer status, String hashCode, String apiKey) {
+        Intent i = new Intent(this, EmployeeInfoActivity.class);
+        i.putExtra("name", name);
+        i.putExtra("status", status);
+        i.putExtra("hash", hashCode);
+        i.putExtra("apiKey", apiKey);
 
         startActivityForResult(i, 1);
     }
@@ -191,6 +194,14 @@ public class ScannerActivity extends AppCompatActivity implements ScannerView {
 
     @Override
     public void displayError(String err) {
-        Toast.makeText(this, err, Toast.LENGTH_LONG).show();
+        scanner.resume();
+        if (err.equals(ApiError.ERROR_NON_200_RESPONSE))
+            Toast.makeText(this, "Nieprawidłowy kod QR", Toast.LENGTH_LONG).show();
+        else Toast.makeText(this, err, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        return;
     }
 }

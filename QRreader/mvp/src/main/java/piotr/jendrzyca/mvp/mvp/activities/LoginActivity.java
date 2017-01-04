@@ -1,4 +1,4 @@
-package jendrzyca.piotr.qrreader.mvp.activities;
+package piotr.jendrzyca.mvp.mvp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;

@@ -21,13 +21,13 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName"
+        android:inputType="text"
         android:text="Jakies imie"
         android:textAlignment="center"
         android:layout_below="@id/tbMessage"
         android:ems="10"
-        android:id="@+id/tbFirstName"
-        android:textSize="20sp"
+        android:id="@+id/tvFirstName"
+        android:textSize="30sp"
         android:paddingTop="20dp"
         android:fontFamily="serif"
         android:textColor="@color/zxing_status_text" />
@@ -36,42 +36,64 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
-        android:text="Name"
+        android:text="Sugerowany status to"
         android:textAlignment="center"
-        android:layout_below="@id/tbFirstName"
+        android:layout_below="@id/tvFirstName"
         android:ems="10"
-        android:id="@+id/tbLastName"
+        android:id="@+id/tvSuggestedStatus"
         android:textSize="20sp"
         android:paddingTop="20dp"
         android:fontFamily="serif"
         android:textColor="@color/zxing_status_text" />
 
+
+
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/in"
+        android:src="@drawable/in_big"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/ivSuggestedStatus" />
+
+    <TextView
+        android:text="Zmień status na: "
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ivSuggestedStatus"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="39dp"
+        android:id="@+id/changeStatus"
+        android:fontFamily="serif"
+        android:textSize="15sp"
+        android:textColor="@android:color/holo_green_dark" />
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/out_small"
+        android:layout_below="@id/changeStatus"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:id="@+id/ivStatus" />
-
-    <TextView
-        android:text="TextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/ivStatus"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="39dp"
-        android:id="@+id/tvStatus"
-        android:fontFamily="serif"
-        android:textSize="20sp"
-        android:textColor="@android:color/holo_green_dark" />
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="17dp"
+        android:fontFamily="serif"
         android:id="@+id/tvRemaining"
         android:textColor="@android:color/holo_red_dark" />
+
+    <com.github.ybq.android.spinkit.SpinKitView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:visibility="invisible"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_alignParentBottom="true"
+        style="@style/SpinKitView.Small.DoubleBounce"
+        android:layout_gravity="center"
+        app:SpinKit_Color="@color/colorAccent"
+        android:id="@+id/loadBar"/>
 </RelativeLayout>

@@ -1,4 +1,4 @@
-package jendrzyca.piotr.qrreader.mvp;
+package jendrzyca.piotr.qrreader.mvp.view;
 
 /**
  * Created by Piotr Jendrzyca on 22.12.2016.

@@ -35,6 +35,7 @@ public class BitmapCache {
 
     private Bitmap rotate(Bitmap bitmap) {
         Matrix matrix = new Matrix();
+        matrix.preScale(-1, 1);
         matrix.postRotate(180);
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
     }

@@ -1,11 +1,16 @@
-package jendrzyca.piotr.qrreader.model;
+package jendrzyca.piotr.qrreader.mvp.model;
+
+import com.google.gson.annotations.SerializedName;
+
+
 
 /**
  * Created by Piotr Jendrzyca on 12.12.2016.
  */
 public class ApiKey {
 
-    private String apiKey;
+    @SerializedName("apiKey")
+    public String apiKey;
 
     public ApiKey(String apiKey) {
         this.apiKey = apiKey;
@@ -18,4 +23,5 @@ public class ApiKey {
     public void setApiKey(String apiKey) {
         this.apiKey = apiKey;
     }
+
 }

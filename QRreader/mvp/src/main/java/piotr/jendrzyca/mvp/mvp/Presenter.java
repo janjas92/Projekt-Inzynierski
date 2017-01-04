@@ -1,4 +1,4 @@
-package jendrzyca.piotr.qrreader.mvp;
+package piotr.jendrzyca.mvp.mvp;
 
 /**
  * Created by huddy on 22.12.2016.

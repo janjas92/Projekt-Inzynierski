@@ -2,9 +2,13 @@ package jendrzyca.piotr.qrreader.di.modules;
 
 import android.app.Application;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import dagger.Module;
 import dagger.Provides;
 import jendrzyca.piotr.qrreader.di.scopes.PerApplication;
+import jendrzyca.piotr.qrreader.network.ApiService;
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -18,7 +22,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @Module(includes = ApplicationModule.class)
 public class NetworkModule {
 
-    final String BASE_URL = "https://euw.api.pvp.net/api/lol/";
 
     @Provides
     @PerApplication
@@ -47,12 +50,19 @@ public class NetworkModule {
 
     @Provides
     @PerApplication
-    public Retrofit provideRetrofit(OkHttpClient client) {
+    public Gson provideGson(){
+        return new GsonBuilder()
+                .create();
+    }
+
+    @Provides
+    @PerApplication
+    public Retrofit provideRetrofit(OkHttpClient client, Gson gson) {
         return new Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(ApiService.baseUrl)
                 .client(client)
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
     }
 }
