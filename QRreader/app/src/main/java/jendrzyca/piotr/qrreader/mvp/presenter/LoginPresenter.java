@@ -35,7 +35,8 @@ public class LoginPresenter implements Presenter<LoginView> {
     }
 
     public void login(String username, String password) {
-        getApiKey = retrofit.create(ApiService.class).getApiKey(Base64.encodeToString(("test" + "ED96M8UP").getBytes(), Base64.NO_WRAP))
+        //"test" + "ED96M8UP"
+        getApiKey = retrofit.create(ApiService.class).getApiKey(Base64.encodeToString((username + password).getBytes(), Base64.NO_WRAP))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<ApiKey>() {

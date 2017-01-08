@@ -17,10 +17,10 @@
 
 
     <!--Login strings -->
-    <string name="login">Zaloguj</string>
-    <string name="name">Nazwa</string>
-    <string name="password">Hasło</string>
-    <string name="go">WJO</string>
+    <string name="login">Logowanie</string>
+    <string name="name">Nazwa użytkownika</string>
+    <string name="password">Klucz API</string>
+    <string name="go">Zaloguj</string>
     <string name="register">Registrejszyn</string>
     <string name="repeat_password">Powtórz hasło</string>
     <string name="next">Dalej</string>
