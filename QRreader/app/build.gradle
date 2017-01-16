@@ -21,15 +21,21 @@ apply plugin: 'me.tatarka.retrolambda'
 
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'piotr'
+            keyPassword 'piter123'
+            storePassword 'piter123'
+            storeFile file('C:/Users/huddy/android.jks')
+        }
+    }
     compileSdkVersion 23
     buildToolsVersion "23.0.3"
-
     //for lambda expressions
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
     defaultConfig {
         applicationId "jendrzyca.piotr.qrreader"
         minSdkVersion 17
@@ -56,68 +62,50 @@ repositories {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-
     //espresso
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
     //matcher library
     testCompile 'org.hamcrest:hamcrest-library:1.3'
-
     //mockito
     testCompile 'org.mockito:mockito-core:1.10.19'
-
     //qr code reader
     compile 'com.journeyapps:zxing-android-embedded:3.3.0'
     compile 'com.android.support:appcompat-v7:23.4.0'
     testCompile 'junit:junit:4.12'
-
     //loading tools
     compile 'com.github.ybq:Android-SpinKit:1.1.0'
-
     //butterknife
     compile 'com.jakewharton:butterknife:8.4.0'
     apt 'com.jakewharton:butterknife-compiler:8.4.0'
-
     //dagger
     apt 'com.google.dagger:dagger-compiler:2.5'
     compile 'com.google.dagger:dagger:2.5'
     provided 'javax.annotation:jsr250-api:1.0'
-
     //retrofit2
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.okhttp3:logging-interceptor:3.3.1'
-
-
     //rxJava
     compile 'io.reactivex:rxjava:1.1.8'
     compile 'io.reactivex:rxandroid:1.2.1'
-
     //rxJava adapter for retrofit
     compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
-
     //gson converter for retrofit
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
-
     //picasso
-    compile "com.squareup.picasso:picasso:2.4.0"
-
+    compile 'com.squareup.picasso:picasso:2.4.0'
     //timber
     compile 'com.jakewharton.timber:timber:4.4.0'
-    
     //bluring images
     compile 'com.wonderkiln:blurkit:1.0.0'
-
     //progress indicator
     compile 'com.wang.avi:library:2.1.3'
-
     //login materials
-    compile ('com.github.ozodrukh:CircularReveal:1.3.1@aar') {
+    compile('com.github.ozodrukh:CircularReveal:1.3.1@aar') {
         transitive = true;
     }
     compile 'com.github.shem8:material-login:2.1.1'
-
-
 }

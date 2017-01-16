@@ -3,8 +3,10 @@
     package="jendrzyca.piotr.qrreader">
 
     <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
+
     <uses-permission android:name="android.permission.INTERNET" />
 
 
@@ -16,17 +18,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".activities.LoginActivity">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-            <category android:name="android.intent.category.LAUNCHER" />
-            <action android:name="android.intent.action.VIEW" />
-            <category android:name="android.intent.category.DEFAULT" />
-            <category android:name="android.intent.category.BROWSABLE" />
-            <data
-                android:host="redirecturi"
-                android:scheme="your" />
-        </intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+
+            </intent-filter>
         </activity>
 
         <activity android:name=".activities.ScannerActivity">
